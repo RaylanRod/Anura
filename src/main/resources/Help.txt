@@ -1,5 +1,5 @@
                         CONTROLS
-GO[DIRECTION]       TALK[NPC]     HIDE
-GET[ITEM]           LOOK[LOCATION, ITEM, NPC]
+GO[DIRECTION]       TALK[npc]     HIDE
+GET[ITEM]           LOOK[LOCATION, ITEM, npc]
 HELP                QUIT          MAP
 MUSIC               FX
