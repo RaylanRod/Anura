@@ -4,6 +4,7 @@ import com.anura.view.GamePanel;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.Random;
 
 public class Entity {
 
@@ -18,8 +19,15 @@ public class Entity {
     public boolean collisionOn = false;
     public int solidAreaDefaultX, solidAreaDefaultY; //For item interactions
     public int actionLockCounter;
-    String dialogues[] = new String[20];
+    String dialogues[] = new String[3];
+    public boolean invincible = false;
+    public int invincibleCounter = 0;
+    public boolean hiding;
     int dialogueIndex = 0;
+    public String name;
+    public int maxLife;
+    public int life;
+    public int type; //0 = player, 1 = npc, 2 = monster
 
     public Entity(GamePanel gp) {
         this.gp = gp;
@@ -33,8 +41,11 @@ public class Entity {
         if (dialogues[dialogueIndex] == null){
             dialogueIndex = 0;
         }
-        gp.ui.currentDialogue = dialogues[dialogueIndex];
-        dialogueIndex++;
+        Random random = new Random();
+        int randomIndex = random.nextInt(dialogues.length);
+        gp.ui.currentDialogue = dialogues[randomIndex];  // returns a random dialog index from 0-2
+//        gp.ui.currentDialogue = dialogues[dialogueIndex];
+//        dialogueIndex++;
 
         switch(gp.player.direction) {
             case "up":
@@ -56,6 +67,17 @@ public class Entity {
         setAction();
         collisionOn = false;
         gp.cChecker.checkTile(this);
+        gp.cChecker.checkObject(this, false);
+        gp.cChecker.checkEntity(this, gp.npc);
+        gp.cChecker.checkEntity(this, gp.monster);
+        boolean contactPlayer = gp.cChecker.checkPlayer(this);
+
+        if (this.type == 2 && contactPlayer){
+            if (!gp.player.invincible) {
+                gp.player.life -= 1;
+                gp.player.invincible = true;
+            }
+        }
         if (!collisionOn) {
             switch (direction) {
                 case "up":

@@ -6,7 +6,7 @@ import java.io.IOException;
 public class OBJ_BottleCap extends SuperObject {
     public OBJ_BottleCap() {
 
-        name = "bottleCap";
+        name = "bottlecap";
         try {
             image = ImageIO.read(getClass().getResourceAsStream("/objects/bottlecap.png"));
         } catch (IOException e) {

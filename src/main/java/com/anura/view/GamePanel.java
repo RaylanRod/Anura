@@ -5,7 +5,7 @@ import com.anura.controller.KeyHandler;
 import com.anura.model.CollisionChecker;
 import com.anura.model.guientity.Entity;
 import com.anura.model.guientity.Player;
-import com.anura.model.object.SuperObject;
+import com.anura.model.object.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,6 +15,8 @@ public class GamePanel extends JPanel implements Runnable {
     // SCREEN SETTINGS
     private final int originalTileSize = 16; // 16x16 tile
     private final int scale = 3;  // multiplier scale for tiles
+    TopPanel topPanel;
+    BottomPanel bottomPanel;
 
     public final int tileSize = originalTileSize * scale; // 48x48 tile
     // visible area on screen
@@ -42,29 +44,33 @@ public class GamePanel extends JPanel implements Runnable {
     public final int dialogueState = 3;
     public final int helpState = 4;
     public final int soundState = 5;
+    public final int winState = 6;
 
     // Tile manager
     public TileManager tileM = new TileManager(this);
     public CollisionChecker cChecker = new CollisionChecker(this);
+    ExtendedGamePanel eGP;
 
     // GAME THREAD
     public Thread gameThread;
 
-    //UI
-    public UI ui = new UI(this);
 
     //KEY HANDLER
     public KeyHandler keyH = new KeyHandler(this);
 
     //PLAYER instantiation
-    public Player player = new Player(this, keyH);
+    public Player player = new Player(this, keyH, topPanel);
 
     //OBJECT Instantiation
     public SuperObject obj[] = new SuperObject[4];
     public AssetSetter setter = new AssetSetter(this);
 
     //NPC
-    public Entity npc[] = new Entity[10];
+    public Entity npc[] = new Entity[20];
+
+    //MONSTER
+    public Entity monster[] = new Entity[10];
+
 
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -74,16 +80,59 @@ public class GamePanel extends JPanel implements Runnable {
         this.setFocusable(true);
     }
 
+    //UI
+    public UI ui= new UI(this, topPanel, bottomPanel);
+
     public void setUpGame() {
         setter.setObject();
         setter.setNPC();
-//        gameState = playState; // remove when titleState complete
         gameState = titleState;
+        setter.setMonster();
     }
 
     public void startGameThread() {
         gameThread = new Thread(this);
         gameThread.start();
+    }
+
+    public void resetGame(){
+        GamePanel gp = setter.gp;
+        // reset item locations
+        gp.obj[0] = new OBJ_Backpack();
+        setter.objectSettings(0, 18, 32);
+        gp.obj[1] = new OBJ_Leaf();
+        setter.objectSettings(1, 25, 27);
+        gp.obj[2] = new OBJ_GlassBead();
+        setter.objectSettings(2, 7, 29);
+        gp.obj[3] = new OBJ_BottleCap();
+        setter.objectSettings(3, 54, 25);
+        // Clear player inventory and reset location
+        gp.player.inventory.clear();
+        gp.player.worldX = gp.tileSize * 18;
+        gp.player.worldY = gp.tileSize * 14;
+        gp.player.speed = 4;
+        gp.player.direction = "down";
+        // Reset entity locations
+        setter.npcSettings(0, 18, 26);
+        setter.npcSettings(1, 55, 4);
+        setter.npcSettings(2, 60, 4);
+        setter.npcSettings(3, 21, 16);
+        setter.npcSettings(4, 41, 20);
+        setter.npcSettings(5, 10, 26);
+        setter.npcSettings(6, 21, 42);
+        setter.npcSettings(7, 35, 38);
+        setter.npcSettings(8, 50, 4);
+        setter.npcSettings(9, 57, 26);
+        // reset monsters
+        setter.monsterSetting(0, 55, 7);
+        setter.monsterSetting(1, 36, 27);
+        setter.monsterSetting(2, 52, 28);
+
+
+        // Reset inventory
+        TopPanel.updateInventory(player.inventory);
+        BottomPanel.resetQuests();
+        BottomPanel.addQuest(player.findBackpack);
     }
 
 
@@ -115,6 +164,7 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void update() {
+
         if (gameState == playState) {
             //PLAYER
             player.update();
@@ -122,6 +172,11 @@ public class GamePanel extends JPanel implements Runnable {
             for (int i = 0; i < npc.length; i++) {
                 if (npc[i] != null) {
                     npc[i].update();
+                }
+            }
+            for (int i = 0; i < monster.length; i++) {
+                if (monster[i] != null) {
+                    monster[i].update();
                 }
             }
         }
@@ -151,9 +206,14 @@ public class GamePanel extends JPanel implements Runnable {
                 }
             }
             //NPC
-            for (int i = 0; i < obj.length; i++) {
+            for (int i = 0; i < npc.length; i++) {
                 if (npc[i] != null) {
                     npc[i].draw(g2);
+                }
+            }
+            for (int i = 0; i < monster.length; i++) {
+                if (monster[i] != null) {
+                    monster[i].draw(g2);
                 }
             }
 

@@ -5,11 +5,11 @@ import com.anura.view.Music;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.io.IOException;
-import java.net.URISyntaxException;
 
 public class KeyHandler implements KeyListener {
     GamePanel gp;
+    private boolean isFirstPlayState = true;
+    private boolean transitionToHelp = false;
 
     public boolean upPressed, downPressed, leftPressed, rightPressed, enterPressed;
 
@@ -29,13 +29,13 @@ public class KeyHandler implements KeyListener {
             if (code == KeyEvent.VK_W) {
                 gp.ui.menuNum--;
                 if (gp.ui.menuNum < 0) {
-                    gp.ui.menuNum = 3;
+                    gp.ui.menuNum = 2;
                 }
                 gp.ui.drawTitleScreen();
             }
             if (code == KeyEvent.VK_S) {
                 gp.ui.menuNum++;
-                if (gp.ui.menuNum > 3) {
+                if (gp.ui.menuNum > 2) {
                     gp.ui.menuNum = 0;
                 }
                 gp.ui.drawTitleScreen();
@@ -43,7 +43,8 @@ public class KeyHandler implements KeyListener {
             if (code == KeyEvent.VK_ENTER) {
                 switch (gp.ui.menuNum) {
                     case 0:
-                        gp.gameState = gp.playState;
+//                        gp.setUpGame();
+                        gp.gameState = gp.helpState;
                         Music.playBGMusic("ShumbaTest.wav");
                         gp.ui.musicPlaying = true;
                         break;
@@ -51,20 +52,6 @@ public class KeyHandler implements KeyListener {
                         // not implemented yet
                         break;
                     case 2:
-                        // play console game
-                        /*  Not working in JAR yet
-                        GameLogic gameLogic = new GameLogic();
-                        try {
-                            gameLogic.execute();
-                        } catch (IOException ex) {
-                            ex.printStackTrace();
-                        } catch (URISyntaxException ex) {
-                            ex.printStackTrace();
-                        }
-
-                         */
-                        break;
-                    case 3:
                         System.exit(0);
                         break;
                 }
@@ -73,6 +60,7 @@ public class KeyHandler implements KeyListener {
 
         //PLAY STATE
         if (gp.gameState == gp.playState) {
+
             // if key is pressed, set to true
             if (code == KeyEvent.VK_W) {
                 upPressed = true;
@@ -91,6 +79,9 @@ public class KeyHandler implements KeyListener {
             }
             if (code == KeyEvent.VK_ESCAPE) {
                 gp.gameState = gp.pauseState;
+            }
+            if (code == KeyEvent.VK_H) {
+                gp.player.hidePlayer();
             }
         }
         // PAUSE STATE
@@ -141,8 +132,9 @@ public class KeyHandler implements KeyListener {
                     code == KeyEvent.VK_S) {
                 gp.gameState = gp.playState;
             }
-            // Help State
-        } else if (gp.gameState == gp.helpState) {
+        }
+        // Help State
+        else if (gp.gameState == gp.helpState) {
             if (code == KeyEvent.VK_ENTER ||
                     code == KeyEvent.VK_ESCAPE) {
                 gp.gameState = gp.playState;
@@ -211,11 +203,24 @@ public class KeyHandler implements KeyListener {
                     }
             }
         }
+        // Win state
+        else if (gp.gameState == gp.winState){
+            switch(code){
+                case KeyEvent.VK_ENTER:
+                case KeyEvent.VK_ESCAPE:
+                    gp.resetGame();
+                    gp.gameState = gp.titleState;
+
+                    break;
+            }
+        }
+
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
         int code = e.getKeyCode();
+
         // when key released, set to false
         if (code == KeyEvent.VK_W) {
             upPressed = false;
@@ -228,6 +233,9 @@ public class KeyHandler implements KeyListener {
         }
         if (code == KeyEvent.VK_S) {
             downPressed = false;
+        }
+        if(code == KeyEvent.VK_ENTER){
+            enterPressed = false;
         }
     }
 }
