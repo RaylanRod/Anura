@@ -41,6 +41,7 @@ public class AssetSetter {
         gp.npc[index].worldX = x * gp.tileSize;
         gp.npc[index].worldY = y * gp.tileSize;
     }
+
     public void monsterSetting(int index, int x, int y){
         gp.monster[index].worldX = x * gp.tileSize;
         gp.monster[index].worldY = y * gp.tileSize;

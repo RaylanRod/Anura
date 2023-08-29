@@ -2,6 +2,7 @@ package com.anura.view;
 
 import com.anura.UI;
 import com.anura.controller.KeyHandler;
+import com.anura.controller.Score;
 import com.anura.model.CollisionChecker;
 import com.anura.model.guientity.Entity;
 import com.anura.model.guientity.Player;
@@ -45,7 +46,8 @@ public class GamePanel extends JPanel implements Runnable {
     public final int helpState = 4;
     public final int soundState = 5;
     public final int winState = 6;
-
+    public long startTime;
+    public long endTime;
     // Tile manager
     public TileManager tileM = new TileManager(this);
     public CollisionChecker cChecker = new CollisionChecker(this);
@@ -138,7 +140,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     @Override
     public void run() {
-
+        startTime = Score.startTimer();
         double drawInterval = 1_000_000_000 / FPS;
         double delta = 0;
         long lastTime = System.nanoTime();

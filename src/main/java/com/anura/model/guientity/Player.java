@@ -2,6 +2,7 @@ package com.anura.model.guientity;
 
 import com.anura.controller.KeyHandler;
 import com.anura.controller.Quest;
+import com.anura.controller.Score;
 import com.anura.view.BottomPanel;
 import com.anura.view.GamePanel;
 import com.anura.view.Music;
@@ -186,6 +187,7 @@ public class Player extends Entity {
                     Music.stopBackgroundMusic();
                     gp.ui.musicPlaying = false;
                     gp.gameState = gp.winState;
+                    gp.endTime = Score.endTimer();
                 }
             }
             gp.npc[i].speak();
