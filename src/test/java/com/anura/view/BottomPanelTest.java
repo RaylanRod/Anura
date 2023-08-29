@@ -9,7 +9,7 @@ class BottomPanelTest {
     BottomPanel bottomPanel = new BottomPanel();
 
     @Test
-    void addQuest() {
+    void addQuestTest_ShouldReturnBothQuests() {
         // set quest1 and quest2 values
         Quest quest1 = new Quest("Quest Test 1");
         Quest quest2 = new Quest("Quest Test 2");
@@ -29,7 +29,7 @@ class BottomPanelTest {
     }
 
     @Test
-    void removeQuest() {
+    void removeQuestTest_ShouldReturnOnlyQuest2() {
         // set quest1 and quest2 values
         Quest quest1 = new Quest("Quest Test 1");
         Quest quest2 = new Quest("Quest Test 2");
@@ -52,7 +52,7 @@ class BottomPanelTest {
     }
 
     @Test
-    void resetQuests() {
+    void resetQuestsTest_ShouldRemoveAllQuests() {
         // set quest1 and quest2 values
         Quest quest1 = new Quest("Quest Test 1");
         Quest quest2 = new Quest("Quest Test 2");
